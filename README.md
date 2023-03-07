@@ -17,11 +17,12 @@
 
 ### 2.2 启动方法
 1. `Visual Studio`
-如果是通过 `Visual Studio` 需要设置库依赖项
+如果是通过 `Visual Studio` 需要设置库依赖项，然后将头文件和源文件放在一个项目中，运行即可
 ![库依赖项](images/image1.png)
 
-2. `CMakeLists`
-通过项目中的 `CMakeLists.txt`，编译可执行文件 `server`，运行 `server`。
+2. `bash`
+- 构建项目: ```bash build.sh```
+- 运行项目: ```bash run.sh```
 
 ## 三、总结
 
