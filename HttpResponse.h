@@ -3,8 +3,8 @@
  * @github: https://github.com/yuyuyuj1e
  * @csdn: https://blog.csdn.net/yuyuyuj1e
  * @date: 2023-02-27 18:25:07
- * @last_edit_time: 2023-03-05 16:10:06
- * @file_path: /Cpp-Web-Server/HttpResponse.h
+ * @last_edit_time: 2023-03-06 16:07:51
+ * @file_path: /CC/HttpResponse.h
  * @description: HttpResponse 模块头文件
  */
 
@@ -50,7 +50,7 @@ public:
 	~HttpResponse() = default;
 
 	void addHeader(const std::string key, const std::string value);  // 添加响应头
-	void prepareMsg(Buffer* send_buffer, int socket);  // 组织 http 响应数据
+	void prepareHeadMsg(Buffer* send_buffer, int socket);  // 组织 http 响应头数据
 	
 	inline void setFileName(std::string name);
 	inline void setStatusCode(StatusCode code);

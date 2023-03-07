@@ -35,7 +35,7 @@ void HttpResponse::addHeader(const std::string key, const std::string value) {
  * @param {Buffer*} send_buffer: 存储待发送数据的缓冲区
  * @param {int} socket: 和客户端通信的文件描述符
  */
-void HttpResponse::prepareMsg(Buffer* send_buffer, int socket) {
+void HttpResponse::prepareHeadMsg(Buffer* send_buffer, int socket) {
 	char tmp[1024] = { 0 };
 
 	// 组织响应行

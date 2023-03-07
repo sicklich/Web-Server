@@ -3,8 +3,7 @@
  * @github: https://github.com/yuyuyuj1e
  * @csdn: https://blog.csdn.net/yuyuyuj1e
  * @date: 2023-02-27 18:25:07
- * @last_edit_time: 2023-03-06 14:34:57
- * @file_path: /Cpp-Web-Server/HttpRequest.cpp
+ * @last_edit_time: 2023-03-07 09:42:04
  * @description: HttpResponse 模块源文件
  */
 
@@ -63,7 +62,7 @@ bool HttpRequest::parseRequest(Buffer* read_buffer, HttpResponse* response, Buff
     // 如果解析完毕, 准备回复的数据
     if (m_cur_state == PrecessState::DONE) {
         processRequest(response);  // 1. 根据解析出的原始数据, 对客户端的请求做出处理
-        response->prepareMsg(send_buffer, cfd);  // 2. 组织响应数据并发送给客户端
+        response->prepareHeadMsg(send_buffer, cfd);  // 2. 组织响应头数据并发送给客户端
     }
 
     reset();   // 请求处理完毕，还原初始状态, 保证还能继续处理第二条及以后的请求
@@ -179,7 +178,7 @@ bool HttpRequest::parseHeader(Buffer* read_buffer) {
         read_buffer->readPosIncrease(line_size + 2);  // 跳过 /r/n
     }
     else {  // 此时解析到了空行，如果是 GET 请求，则直接结束，如果是 POST 请求则后续是请求体
-        if (strcasecmp(m_method.data(), "get") == 0) {  // GET 请求
+        if (strcasecmp(m_method.data(), "get") == 0 || strcasecmp(m_method.data(), "head") == 0) {  // GET 请求或 HEAD 请求
             read_buffer->readPosIncrease(2);  // 跳过空行
             setState(PrecessState::DONE);  // 修改解析状态
         }
@@ -321,7 +320,11 @@ const std::string HttpRequest::getFileType(const std::string name) {
  * @return {bool} 成功返回 true，失败返回 false
  */
 bool HttpRequest::processRequest(HttpResponse* response) {
-    if (!(strcasecmp(m_method.data(), "get") == 0 || strcasecmp(m_method.data(), "post") == 0 )) {  // 忽略大小写
+    // 只接受 get post head 请求
+    if (!(strcasecmp(m_method.data(), "get") == 0 
+        || strcasecmp(m_method.data(), "post") == 0 
+        || strcasecmp(m_method.data(), "head") == 0 )) 
+    {  // 忽略大小写
         return false;
     }
 
@@ -354,12 +357,12 @@ bool HttpRequest::processRequest(HttpResponse* response) {
         // 判断文件类型
         if (S_ISDIR(st.st_mode)) {  // 目录
             response->addHeader("Content-type", getFileType(".html"));  // 响应头
-            response->setFunc(sendDir);  // 发送目录
+            response->setFunc(sendDir);
         }
         else {  // 文件
             response->addHeader("Content-type", getFileType(file));  // 响应头
             response->addHeader("Content-length", std::to_string(st.st_size));  // 响应头
-            response->setFunc(sendFile);  // 发送文件
+            response->setFunc(sendFile);  
         }
     }
     return true;
