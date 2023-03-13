@@ -3,7 +3,7 @@
  * @github: https://github.com/yuyuyuj1e
  * @csdn: https://blog.csdn.net/yuyuyuj1e
  * @date: 2023-02-27 18:25:09
- * @last_edit_time: 2023-03-08 09:57:47
+ * @last_edit_time: 2023-03-09 16:33:10
  * @file_path: /CC/src/Net/TcpConnection.cpp
  * @description: TcpConnection 模块源文件
  */
@@ -20,6 +20,7 @@ int TcpConnection::processRead(void* arg) {
 	int count = conn->m_read_buffer->readData(socket);
 
 	Debug("receive http request data: %s", conn->m_read_buffer->readPos());
+	Log::addTaskStatic(conn->m_name + '\n' + conn->m_read_buffer->readPos(), 1, conn->m_log);
 	
 	if (count > 0) {
 		// 接收到了 http 请求，解析 http 请求
@@ -29,10 +30,12 @@ int TcpConnection::processRead(void* arg) {
 			// 解析失败
 			std::string err_msg = "Http/1.1 400 Bad Request\r\n\r\n";
 			conn->m_write_buffer->appendData(err_msg);
+			Log::addTaskStatic(conn->m_name + '\n' + "400 Bad Request", 1, conn->m_log);
 		}
 	}
 	// 断开连接
 	conn->m_event_loop->addTask(conn->m_channel, ElemType::DELETE);
+	Log::addTaskStatic(conn->m_name + '\n' + "closed", 0, conn->m_log);
 	return 0;
 }
 
@@ -62,7 +65,7 @@ int TcpConnection::destroy(void* arg) {
 	return 0;
 }
 
-TcpConnection::TcpConnection(int fd, EventLoop* event_loop) {
+TcpConnection::TcpConnection(int fd, EventLoop* event_loop, Log* log) {
 	m_event_loop = event_loop;
 	m_read_buffer = new Buffer(10240);
 	m_write_buffer = new Buffer(10240);
@@ -72,6 +75,8 @@ TcpConnection::TcpConnection(int fd, EventLoop* event_loop) {
 	m_name = "Connection-" + std::to_string(fd);
 	m_channel = new Channel(fd, FDEvent::READEVENT, processRead, processWrite, destroy, this);
 	event_loop->addTask(m_channel, ElemType::ADD);
+
+	m_log = log;
 }
 
 TcpConnection::~TcpConnection() {

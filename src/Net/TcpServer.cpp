@@ -3,7 +3,7 @@
  * @github: https://github.com/yuyuyuj1e
  * @csdn: https://blog.csdn.net/yuyuyuj1e
  * @date: 2023-02-27 18:25:09
- * @last_edit_time: 2023-03-08 09:56:53
+ * @last_edit_time: 2023-03-09 16:50:11
  * @file_path: /CC/src/Net/TcpServer.cpp
  * @description: 服务器模块源代码
  */
@@ -31,7 +31,7 @@ int TcpServer::acceptConnection(void* arg) {
 	EventLoop* evLoop = server->m_thread_pool->takeWorkerEventLoop();
 
 	// 将 cfd 放到 TcpConnection 中处理
-	new TcpConnection(cfd, evLoop);
+	new TcpConnection(cfd, evLoop, server->m_log);
 	return 0;
 }
 
@@ -39,6 +39,7 @@ int TcpServer::acceptConnection(void* arg) {
 TcpServer::TcpServer(unsigned short port, int thread_num) : m_port(port), m_thread_num(thread_num) {
 	m_main_event_loop = new EventLoop();
 	m_thread_pool = new ThreadPool(m_main_event_loop, thread_num);
+	m_log = new Log();
 	setListen();
 }
 
@@ -88,6 +89,8 @@ void TcpServer::setListen() {
  * @description: 启动服务器程序，启动线程池，封装监听套接字与响应操作，并启动事件循环反应堆模型（主反应堆模型）
  */
 void TcpServer::run() {
+	// 启动日志
+	m_log->run();
 	// 启动线程池
 	m_thread_pool->run();
 	// 初始化一个 channel，封装监听套接字

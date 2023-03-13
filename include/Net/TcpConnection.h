@@ -3,7 +3,7 @@
  * @github: https://github.com/yuyuyuj1e
  * @csdn: https://blog.csdn.net/yuyuyuj1e
  * @date: 2023-02-27 18:25:09
- * @last_edit_time: 2023-03-08 10:05:46
+ * @last_edit_time: 2023-03-09 15:03:04
  * @file_path: /CC/include/Net/TcpConnection.h
  * @description: TcpConnection 模块头文件
  */
@@ -14,6 +14,7 @@
 #include "Channel.h"
 #include "HttpResponse.h"
 #include "HttpRequest.h"
+#include "Log.h"
 
 /** 
  * @description: TcpConnection 主要负责与客户端进行通信，接收客户端的信息
@@ -32,12 +33,14 @@ private:
 	HttpRequest* m_request;  // 解析客户端请求数据
 	HttpResponse* m_response;  // 组织返还客户端的数据块
 
+	Log* m_log;  // 日志类
+
 private:
 	static int processRead(void* arg);
 	static int processWrite(void* arg);
 	static int destroy(void* arg);
 
 public:
-	TcpConnection(int fd, EventLoop* event_loop);
+	TcpConnection(int fd, EventLoop* event_loop, Log* log);
 	~TcpConnection();
 };
