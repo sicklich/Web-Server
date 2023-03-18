@@ -3,7 +3,7 @@
  * @github: https://github.com/yuyuyuj1e
  * @csdn: https://blog.csdn.net/yuyuyuj1e
  * @date: 2023-03-08 09:51:24
- * @last_edit_time: 2023-03-09 17:12:25
+ * @last_edit_time: 2023-03-16 18:11:56
  * @file_path: /CC/src/Log/Log.cpp
  * @description: 日志模块源文件
  */
@@ -14,14 +14,16 @@
 #include <assert.h>
 #include <iostream>
 
+Log* Log::m_log = new Log("/home/ubuntu/桌面/CC/Log");
+
 /** 
+ * @param {string} log_path: 存放日志文件的目录，需要指定
  * @param {size_t} max_log_size: 日志文件的大小，超过该大小则切换另一个文件，默认为 2 M
- * @param {string} log_path: 存放日志文件的目录，默认为 ./Log
  * @param {LogMode} mode: 日志记录方式，默认为 apt
  * @param {TimeFormat} tf: 日志记录所采用的时间格式，默认为 YYYY-MM-DD HH:MM:SS
  * @param {bool} backup: 是否进行日志备份，默认为 true
  */
-Log::Log(size_t max_log_size, std::string log_path, LogMode mode, TimeFormat tf, bool backup) 
+Log::Log(std::string log_path, size_t max_log_size, LogMode mode, TimeFormat tf, bool backup) 
     : m_max_size(max_log_size)
     , m_path(log_path)
     , m_mode(mode)

@@ -6,6 +6,9 @@ aux_source_directory(./HTTP HTTP_LIST)
 aux_source_directory(./Net NET_LIST)
 aux_source_directory(./Log LOG_LIST)
 
+# 设置可执行文件存放路径
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+
 # 指定生成可执行文件
 add_executable(server ${SRC_LIST} ${BASE_LIST} ${DISPATCHER_LIST} ${HTTP_LIST} ${NET_LIST} ${LOG_LIST})
 

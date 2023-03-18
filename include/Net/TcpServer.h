@@ -3,7 +3,7 @@
  * @github: https://github.com/yuyuyuj1e
  * @csdn: https://blog.csdn.net/yuyuyuj1e
  * @date: 2023-02-27 18:25:09
- * @last_edit_time: 2023-03-09 16:40:09
+ * @last_edit_time: 2023-03-16 17:12:09
  * @file_path: /CC/include/Net/TcpServer.h
  * @description: 服务器模块头文件
  */
@@ -23,7 +23,7 @@ private:
 	ThreadPool* m_thread_pool;  // 线程池
 	int m_lfd;  // 用于监听的文件描述符
 	unsigned short m_port;  // 监听端口号
-	Log* m_log;  // 日志类
+	Log* m_log = Log::getInstance();  // 日志类
 
 private:
 	void setListen();  // 初始化监听器
